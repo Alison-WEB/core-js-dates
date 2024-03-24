@@ -144,7 +144,7 @@ function isDateInPeriod(/* date, period */) {
  * '2010-12-15T22:59:00.000Z' => '12/15/2010, 10:59:00 PM'
  */
 function formatDate(date) {
-  const parseDate = new Date(date);
+  const parseDate = new Date(date.slice(0, -1));
   function getLeadingZero(x) {
     return x < 10 ? `0${x}` : x;
   }
@@ -154,10 +154,16 @@ function formatDate(date) {
   const h = parseDate.getHours();
   const m = getLeadingZero(parseDate.getMinutes());
   const s = getLeadingZero(parseDate.getSeconds());
+  let format12;
   if (h > 11) {
-    return `${M}/${D}/${Y}, ${h - 12}:${m}:${s} PM`;
+    format12 = 'PM';
+  } else {
+    format12 = 'AM';
   }
-  return `${M}/${D}/${Y}, ${h}:${m}:${s} AM`;
+  if (h > 12) {
+    return `${M}/${D}/${Y}, ${h - 12}:${m}:${s} ${format12}`;
+  }
+  return `${M}/${D}/${Y}, ${h}:${m}:${s} ${format12}`;
 }
 
 /**
